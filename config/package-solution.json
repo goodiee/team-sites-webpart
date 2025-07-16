@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "team-sites-web-part-client-side-solution",
+    "id": "8c783fa4-bd36-430d-a383-e294e6881ed4",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.18.2"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "TeamSitesWebPart description"
+      },
+      "longDescription": {
+        "default": "TeamSitesWebPart description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "team-sites-web-part Feature",
+        "description": "The feature that activates elements of the team-sites-web-part solution.",
+        "id": "612e0975-2d83-4236-b88b-743efcbc1dee",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/team-sites-web-part.sppkg"
+  }
+}
