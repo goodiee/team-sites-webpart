@@ -6,17 +6,6 @@ It integrates into SharePoint modern pages and can be deployed to your tenant’
 
 ---
 
-## 🚀 Features
-
-✅ Uses Microsoft Graph API to fetch sites  
-✅ Displays the list of Team Sites for the logged-in user  
-✅ Responsive UI, works in modern SharePoint pages  
-✅ Supports dark/light theme switching  
-✅ Built with TypeScript and React  
-✅ Easily extendable for future enhancements
-
----
-
 ## ⚙️ Requirements
 
 - Node.js **v18.17.1** or higher (but lower than v19.0.0)
