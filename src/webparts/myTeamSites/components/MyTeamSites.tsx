@@ -8,19 +8,38 @@ export default class MyTeamSites extends React.Component<IMyTeamSitesProps, {}> 
 
     return (
       <section className={styles.myTeamSites}>
-        <h2>Your Team Sites</h2>
+        <h2>
+          Your Team Sites
+          {sites && sites.length > 0 && ` (${sites.length})`}
+        </h2>
         {sites && sites.length > 0 ? (
           <ul className={styles.siteList}>
             {sites.map((site: ITeamSite) => (
-              <li key={site.id}>
-                <a href={site.url} target="_blank" rel="noreferrer">
+              <li key={site.id} className={styles.siteItem}>
+                <a
+                  href={site.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={styles.siteLink}
+                >
                   {site.name}
                 </a>
+                {site.members && site.members.length > 0 && (
+                  <ul className={styles.memberList}>
+                    {site.members.map((member) => (
+                      <li key={member.id} className={styles.memberItem}>
+                        {member.displayName} ({member.email})
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>
         ) : (
-          <p>You are not a member of any team sites.</p>
+          <p className={styles.emptyMessage}>
+            You are not a member of any Microsoft 365 groups that include SharePoint team sites.
+          </p>
         )}
       </section>
     );
