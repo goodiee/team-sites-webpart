@@ -1,57 +1,46 @@
 import * as React from 'react';
 import styles from './MyTeamSites.module.scss';
-import type { IMyTeamSitesProps } from './IMyTeamSitesProps';
-import { escape } from '@microsoft/sp-lodash-subset';
+import { IMyTeamSitesProps, ITeamSite } from './IMyTeamSitesProps';
 
 export default class MyTeamSites extends React.Component<IMyTeamSitesProps, {}> {
   public render(): React.ReactElement<IMyTeamSitesProps> {
-    const {
-      description,
-      isDarkTheme,
-      environmentMessage,
-      hasTeamsContext,
-      userDisplayName,
-      test,
-      test1,
-      test2,
-      test3
-    } = this.props;
+    const { sites } = this.props;
 
     return (
-      <section className={`${styles.myTeamSites} ${hasTeamsContext ? styles.teams : ''}`}>
-        <div className={styles.welcome}>
-          <img
-            alt=""
-            src={isDarkTheme
-              ? require('../assets/welcome-dark.png')
-              : require('../assets/welcome-light.png')}
-            className={styles.welcomeImage}
-          />
-          <h2>Well done, {escape(userDisplayName)}!</h2>
-          <div>{environmentMessage}</div>
-          <div>Web part property value: <strong>{escape(description)}</strong></div>
-        </div>
-        <div>
-          <h3>Welcome to SharePoint Framework!</h3>
-          <p>
-            The SharePoint Framework (SPFx) is an extensibility model for Microsoft Viva, Microsoft Teams and SharePoint. It&#39;s the easiest way to extend Microsoft 365 with automatic Single Sign On, automatic hosting and industry standard tooling.
-          </p>
-          <h4>Learn more about SPFx development:</h4>
-          <ul className={styles.links}>
-            <li><a href="https://aka.ms/spfx" target="_blank" rel="noreferrer">SharePoint Framework Overview</a></li>
-            <li><a href="https://aka.ms/spfx-yeoman-graph" target="_blank" rel="noreferrer">Use Microsoft Graph in your solution</a></li>
-            <li><a href="https://aka.ms/spfx-yeoman-teams" target="_blank" rel="noreferrer">Build for Microsoft Teams using SharePoint Framework</a></li>
-            <li><a href="https://aka.ms/spfx-yeoman-viva" target="_blank" rel="noreferrer">Build for Microsoft Viva Connections using SharePoint Framework</a></li>
-            <li><a href="https://aka.ms/spfx-yeoman-store" target="_blank" rel="noreferrer">Publish SharePoint Framework applications to the marketplace</a></li>
-            <li><a href="https://aka.ms/spfx-yeoman-api" target="_blank" rel="noreferrer">SharePoint Framework API reference</a></li>
-            <li><a href="https://aka.ms/m365pnp" target="_blank" rel="noreferrer">Microsoft 365 Developer Community</a></li>
+      <section className={styles.myTeamSites}>
+        <h2>
+          Your Team Sites
+          {sites && sites.length > 0 && ` (${sites.length})`}
+        </h2>
+        {sites && sites.length > 0 ? (
+          <ul className={styles.siteList}>
+            {sites.map((site: ITeamSite) => (
+              <li key={site.id} className={styles.siteItem}>
+                <a
+                  href={site.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={styles.siteLink}
+                >
+                  {site.name}
+                </a>
+                {site.members && site.members.length > 0 && (
+                  <ul className={styles.memberList}>
+                    {site.members.map((member) => (
+                      <li key={member.id} className={styles.memberItem}>
+                        {member.displayName} ({member.email})
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
           </ul>
-        </div>
-        <div>Web part property value: <strong>{escape(description)}</strong></div>
-        <p>{escape(test)}</p>
-        <p>{test1}</p>
-        <p>{escape(test2)}</p>
-        <p>{test3}</p>
+        ) : (
+          <p className={styles.emptyMessage}>
+            You are not a member of any Microsoft 365 groups that include SharePoint team sites.
+          </p>
+        )}
       </section>
     );
   }

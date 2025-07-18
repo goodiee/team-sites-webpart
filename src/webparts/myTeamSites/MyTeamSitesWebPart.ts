@@ -1,150 +1,73 @@
+import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { Version } from '@microsoft/sp-core-library';
-import {
-  type IPropertyPaneConfiguration,
-  PropertyPaneTextField,
-  PropertyPaneCheckbox,
-  PropertyPaneDropdown,
-  PropertyPaneToggle
-} from '@microsoft/sp-property-pane';
-import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
-import { IReadonlyTheme } from '@microsoft/sp-component-base';
-
-import * as strings from 'MyTeamSitesWebPartStrings';
+import { Providers, SharePointProvider } from '@microsoft/mgt-spfx';
 import MyTeamSites from './components/MyTeamSites';
 import { IMyTeamSitesProps } from './components/IMyTeamSitesProps';
 
-export interface IMyTeamSitesWebPartProps {
-  description: string;
-  test: string;
-  test1: boolean;
-  test2: string;
-  test3: boolean;
+interface ITeamSite {
+  id: string;
+  name: string;
+  url: string;
+  members: {
+    id: string;
+    displayName: string;
+    email: string;
+  }[];
 }
 
-export default class MyTeamSitesWebPart extends BaseClientSideWebPart<IMyTeamSitesWebPartProps> {
-
-  private _isDarkTheme: boolean = false;
-  private _environmentMessage: string = '';
+export default class MyTeamSitesWebPart extends BaseClientSideWebPart<{}> {
+  public async onInit(): Promise<void> {
+    await super.onInit();
+    Providers.globalProvider = new SharePointProvider(this.context);
+  }
 
   public render(): void {
-    const element: React.ReactElement<IMyTeamSitesProps> = React.createElement(
-      MyTeamSites,
-      {
-        description: this.properties.description,
-        test: this.properties.test,
-        test1: this.properties.test1,
-        test2: this.properties.test2,
-        test3: this.properties.test3,
-        isDarkTheme: this._isDarkTheme,
-        environmentMessage: this._environmentMessage,
-        hasTeamsContext: !!this.context.sdks.microsoftTeams,
-        userDisplayName: this.context.pageContext.user.displayName
-      }
-    );
+    const graphClient = Providers.globalProvider.graph.client;
 
-    ReactDom.render(element, this.domElement);
-  }
+    graphClient
+      .api('/me/memberOf')
+      .select('displayName,id')
+      .get()
+      .then(async (res: any) => {
+        const groups = res.value;
+        console.log("Fetched groups:", groups);
 
-  protected onInit(): Promise<void> {
-    return this._getEnvironmentMessage().then(message => {
-      this._environmentMessage = message;
-    });
-  }
+        const sitePromises = groups.map(async (group: any) => {
+          try {
+            const site = await graphClient.api(`/groups/${group.id}/sites/root`).get();
+            const membersResponse = await graphClient.api(`/groups/${group.id}/members`).get();
 
-  private _getEnvironmentMessage(): Promise<string> {
-    if (!!this.context.sdks.microsoftTeams) {
-      return this.context.sdks.microsoftTeams.teamsJs.app.getContext()
-        .then(context => {
-          let environmentMessage: string = '';
-          switch (context.app.host.name) {
-            case 'Office':
-              environmentMessage = this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentOffice : strings.AppOfficeEnvironment;
-              break;
-            case 'Outlook':
-              environmentMessage = this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentOutlook : strings.AppOutlookEnvironment;
-              break;
-            case 'Teams':
-            case 'TeamsModern':
-              environmentMessage = this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentTeams : strings.AppTeamsTabEnvironment;
-              break;
-            default:
-              environmentMessage = strings.UnknownEnvironment;
+            const members = membersResponse.value.map((member: any) => ({
+              id: member.id,
+              displayName: member.displayName,
+              email: member.mail
+            }));
+
+            return {
+              id: group.id,
+              name: group.displayName,
+              url: site.webUrl,
+              members: members
+            };
+          } catch (error) {
+            console.warn(`⚠️ Could not load site or members for group ${group.displayName}`, error);
+            return null;
           }
-
-          return environmentMessage;
         });
-    }
 
-    return Promise.resolve(this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentSharePoint : strings.AppSharePointEnvironment);
-  }
+        const siteResults = await Promise.all(sitePromises);
+        const sites: ITeamSite[] = siteResults.filter((site) => site !== null);
 
-  protected onThemeChanged(currentTheme: IReadonlyTheme | undefined): void {
-    if (!currentTheme) {
-      return;
-    }
+        const element: React.ReactElement<IMyTeamSitesProps> =
+          React.createElement(MyTeamSites, { sites });
 
-    this._isDarkTheme = !!currentTheme.isInverted;
-    const {
-      semanticColors
-    } = currentTheme;
-
-    if (semanticColors) {
-      this.domElement.style.setProperty('--bodyText', semanticColors.bodyText || null);
-      this.domElement.style.setProperty('--link', semanticColors.link || null);
-      this.domElement.style.setProperty('--linkHovered', semanticColors.linkHovered || null);
-    }
-  }
-
-  protected onDispose(): void {
-    ReactDom.unmountComponentAtNode(this.domElement);
-  }
-
-  protected get dataVersion(): Version {
-    return Version.parse('1.0');
-  }
-
-  protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
-    return {
-      pages: [
-        {
-          header: {
-            description: strings.PropertyPaneDescription
-          },
-          groups: [
-            {
-              groupName: strings.BasicGroupName,
-              groupFields: [
-                PropertyPaneTextField('description', {
-                  label: 'Description'
-                }),
-                PropertyPaneTextField('test', {
-                  label: 'Multi-line Text Field',
-                  multiline: true
-                }),
-                PropertyPaneCheckbox('test1', {
-                  text: 'Checkbox'
-                }),
-                PropertyPaneDropdown('test2', {
-                  label: 'Dropdown',
-                  options: [
-                    { key: '1', text: 'One' },
-                    { key: '2', text: 'Two' },
-                    { key: '3', text: 'Three' },
-                    { key: '4', text: 'Four' }
-                  ]
-                }),
-                PropertyPaneToggle('test3', {
-                  label: 'Toggle',
-                  onText: 'On',
-                  offText: 'Off'
-                })
-              ]
-            }
-          ]
-        }
-      ]
-    };
+        ReactDom.render(element, this.domElement);
+      })
+      .catch((error) => {
+        console.error("Failed to load team sites or members", error);
+        const fallbackElement = React.createElement(MyTeamSites, { sites: [] });
+        ReactDom.render(fallbackElement, this.domElement);
+      });
   }
 }

@@ -1,34 +1,41 @@
-@import '~@fluentui/react/dist/sass/References.scss';
-
 .myTeamSites {
-  overflow: hidden;
-  padding: 1em;
-  color: "[theme:bodyText, default: #323130]";
-  color: var(--bodyText);
-  &.teams {
-    font-family: $ms-font-family-fallbacks;
+  padding: 16px;
+  background-color: #fff;
+}
+
+.siteList {
+  list-style: none;
+  padding-left: 0;
+}
+
+.siteItem {
+  margin-bottom: 16px;
+}
+
+.siteLink {
+  font-weight: 600;
+  font-size: 16px;
+  color: #0078d4;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
   }
 }
 
-.welcome {
-  text-align: center;
+.memberList {
+  margin-top: 8px;
+  padding-left: 20px;
+  font-size: 14px;
+  color: #444;
 }
 
-.welcomeImage {
-  width: 100%;
-  max-width: 420px;
+.memberItem {
+  margin-bottom: 4px;
 }
 
-.links {
-  a {
-    text-decoration: none;
-    color: "[theme:link, default:#03787c]";
-    color: var(--link); // note: CSS Custom Properties support is limited to modern browsers only
-
-    &:hover {
-      text-decoration: underline;
-      color: "[theme:linkHovered, default: #014446]";
-      color: var(--linkHovered); // note: CSS Custom Properties support is limited to modern browsers only
-    }
-  }
+.emptyMessage {
+  color: #888;
+  font-style: italic;
+  margin-top: 12px;
 }

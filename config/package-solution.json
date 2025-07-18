@@ -8,22 +8,22 @@
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
     "developer": {
-      "name": "",
-      "websiteUrl": "",
-      "privacyUrl": "",
-      "termsOfUseUrl": "",
+      "name": "Your Name or Company",
+      "websiteUrl": "https://www.yourcompany.com",
+      "privacyUrl": "https://www.yourcompany.com/privacy",
+      "termsOfUseUrl": "https://www.yourcompany.com/terms",
       "mpnId": "Undefined-1.18.2"
     },
     "metadata": {
       "shortDescription": {
-        "default": "TeamSitesWebPart description"
+        "default": "Displays all Microsoft 365 team sites the user is a member of."
       },
       "longDescription": {
-        "default": "TeamSitesWebPart description"
+        "default": "An SPFx web part that dynamically shows all Microsoft 365 team sites the logged-in user is a member of, using Microsoft Graph API."
       },
       "screenshotPaths": [],
       "videoUrl": "",
-      "categories": []
+      "categories": ["Collaboration", "Productivity"]
     },
     "features": [
       {
@@ -31,6 +31,16 @@
         "description": "The feature that activates elements of the team-sites-web-part solution.",
         "id": "612e0975-2d83-4236-b88b-743efcbc1dee",
         "version": "1.0.0.0"
+      }
+    ],
+    "webApiPermissionRequests": [
+      {
+        "resource": "Microsoft Graph",
+        "scope": "Group.Read.All"
+      },
+      {
+        "resource": "Microsoft Graph",
+        "scope": "Sites.Read.All"
       }
     ]
   },
