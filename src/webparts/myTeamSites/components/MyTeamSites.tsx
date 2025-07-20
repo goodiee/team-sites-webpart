@@ -6,7 +6,6 @@ export default class MyTeamSites extends React.Component<IMyTeamSitesProps, {}> 
   public render(): React.ReactElement<IMyTeamSitesProps> {
     const { sites } = this.props;
 
-    // Filter out the site with name 'CARD site'
     const filteredSites = sites.filter(site => site.name !== 'CARD');
 
     return (
