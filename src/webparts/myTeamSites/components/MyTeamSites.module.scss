@@ -3,12 +3,13 @@
 }
 
 .siteGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* At least 3 cards per row */
-  gap: 16px; /* Space between the cards */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .siteCard {
+  width: 160px;
   background: #fff;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -16,22 +17,7 @@
   color: inherit;
   display: flex;
   flex-direction: column;
-  padding: 10px;
 }
-
-
-@media (max-width: 768px) {
-  .siteCard {
-    width: calc(50% - 16px); /* 2 cards per row on smaller screens */
-  }
-}
-
-@media (max-width: 480px) {
-  .siteCard {
-    width: 100%; /* 1 card per row on mobile */
-  }
-}
-
 
 .cardHeader {
   position: relative;
