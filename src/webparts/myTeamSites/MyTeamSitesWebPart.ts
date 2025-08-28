@@ -23,7 +23,6 @@ interface ITeamSite {
 }
 
 export default class MyTeamSitesWebPart extends BaseClientSideWebPart<{}> {
-  // This will hold the React element to render
   private element: React.ReactElement | null = null;
 
   public async onInit(): Promise<void> {
@@ -68,10 +67,8 @@ export default class MyTeamSitesWebPart extends BaseClientSideWebPart<{}> {
         const siteResults = await Promise.all(sitePromises);
         const sites: ITeamSite[] = siteResults.filter((site) => site !== null) as ITeamSite[];
 
-        // Creating the React element with fetched data
         this.element = React.createElement(MyTeamSites, { sites });
 
-        // Ensure rendering only when the element is available
         ReactDom.render(this.element, this.domElement);
       })
       .catch((error) => {
@@ -82,7 +79,6 @@ export default class MyTeamSitesWebPart extends BaseClientSideWebPart<{}> {
   }
 
   public onDispose(): void {
-    // Properly unmount the React component when the web part is disposed
     ReactDom.unmountComponentAtNode(this.domElement);
   }
 }
