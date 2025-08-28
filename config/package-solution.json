@@ -36,11 +36,11 @@
     "webApiPermissionRequests": [
       {
         "resource": "Microsoft Graph",
-        "scope": "Group.Read.All"
+        "scope": "Group.Read"
       },
       {
         "resource": "Microsoft Graph",
-        "scope": "Sites.Read.All"
+        "scope": "Sites.Read"
       }
     ]
   },
